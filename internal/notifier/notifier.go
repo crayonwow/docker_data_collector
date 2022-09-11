@@ -27,13 +27,13 @@ type (
 		Container        string
 		Name             string
 		ID               string
+		NetworkIO        string
 		CPUPercentage    float64
 		Memory           float64
 		MemoryLimit      float64
 		MemoryPercentage float64
 		NetworkRx        float64
 		NetworkTx        float64
-		NetworkIO        string
 		BlockRead        float64
 		BlockWrite       float64
 		PidsCurrent      uint64 // Not used on Windows

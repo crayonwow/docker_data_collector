@@ -103,21 +103,11 @@ func (w *watcher) watchContainers(ctx context.Context, interval time.Duration, h
 	}()
 }
 
-func (w *watcher) containersAllSilently(ctx context.Context) []types.Container {
-	containers, _ := w.containersAll(ctx)
-	return containers
-}
-
 func (w *watcher) containersAll(ctx context.Context) ([]types.Container, error) {
 	containers, err := w.ContainerList(ctx, types.ContainerListOptions{
 		All: true,
 	})
 	return containers, err
-}
-
-func (c containerHandlers) handleSilently(ctx context.Context, cli *docker.Client, container types.Container) {
-	_ = c.handle(ctx, cli, container)
-	return
 }
 
 func (c containerHandlers) handle(ctx context.Context, cli *docker.Client, container types.Container) (errors error) {

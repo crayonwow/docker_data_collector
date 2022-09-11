@@ -1,1 +1,2 @@
-build-image:
+lint:
+	golangci-lint run

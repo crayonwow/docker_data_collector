@@ -34,6 +34,6 @@ func Run() {
 
 	logrus.Info("Started")
 
-	// todo gracefuly stop services
+	// todo gracefully stop services
 	<-gCtx.Done()
 }

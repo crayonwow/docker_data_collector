@@ -18,9 +18,12 @@ func TestWatcher(t *testing.T) {
 		r.NoError(err)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 		defer cancel()
-		w.WatchContainers(ctx, time.Millisecond*500, func(ctx context.Context, client *docker.Client, container types.Container) error {
-			return nil
-		})
+		w.WatchContainers(ctx,
+			time.Millisecond*500,
+			func(ctx context.Context, client *docker.Client, container types.Container,
+			) error {
+				return nil
+			})
 	})
 
 	t.Run("events", func(t *testing.T) {

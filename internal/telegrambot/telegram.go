@@ -13,9 +13,8 @@ type (
 	}
 
 	bot struct {
+		cli    *tgbotapi.BotAPI
 		chatID int64
-
-		cli *tgbotapi.BotAPI
 	}
 )
 
