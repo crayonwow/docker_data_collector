@@ -30,3 +30,4 @@ jobs:
           context: .
           file: dockerfiles/dockerfile
           push: true
+          tags: vpn-app:latest
