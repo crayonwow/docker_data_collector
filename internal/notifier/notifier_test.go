@@ -25,9 +25,9 @@ func Test_prepareStatTemplate(t *testing.T) {
 	}
 	message, err := prepareStatTemplate(se)
 	require.NoError(t, err)
-	require.Equal(t, `Container name: 1
-CPU %:    1
-MEM %:    1
-NETWORK : 1
+	require.Equal(t, `Name: 1
+CPU %:    1.00%
+MEM %:    1.00%
+NETWORK : 11
 `, message)
 }
