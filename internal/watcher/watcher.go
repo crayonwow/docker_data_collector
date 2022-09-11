@@ -72,6 +72,27 @@ func (w *watcher) WatchContainersEvents(ctx context.Context, handlers ...func(ev
 }
 
 func (w *watcher) watchContainers(ctx context.Context, interval time.Duration, handlers containerHandlers) {
+	f := func() error {
+		containers, err := w.containersAll(ctx)
+		if err != nil {
+			return fmt.Errorf("containers all: %w", err)
+		}
+
+		for _, container := range containers {
+			err = handlers.handle(ctx, w.Client, container)
+			if err != nil {
+				logrus.WithError(err).Error("handle")
+				continue
+			}
+		}
+		return nil
+	}
+
+	err := f()
+	if err != nil {
+		logrus.WithError(err).Error("initial run")
+	}
+
 	go func() {
 	LOOP:
 		for {
@@ -80,22 +101,7 @@ func (w *watcher) watchContainers(ctx context.Context, interval time.Duration, h
 				break LOOP
 			case <-time.After(interval):
 			}
-			err := func() error {
-
-				containers, err := w.containersAll(ctx)
-				if err != nil {
-					return fmt.Errorf("containers all: %w", err)
-				}
-
-				for _, container := range containers {
-					err = handlers.handle(ctx, w.Client, container)
-					if err != nil {
-						logrus.WithError(err).Error("handle")
-						continue
-					}
-				}
-				return nil
-			}()
+			err := f()
 			if err != nil {
 				logrus.WithError(err).Error("tick")
 			}
