@@ -13,6 +13,7 @@ import (
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
 	"github.com/docker/go-units"
+	"github.com/sirupsen/logrus"
 )
 
 type (
@@ -61,7 +62,12 @@ func statsHandler(s sender) watcher.ContainerHandler {
 		if err != nil {
 			return fmt.Errorf("container stats: %w", err)
 		}
-		defer statsRaw.Body.Close()
+		defer func() {
+			cErr := statsRaw.Body.Close()
+			if cErr != nil {
+				logrus.WithError(cErr).Error("containers stats one shot")
+			}
+		}()
 
 		stats := &types.StatsJSON{}
 		dec := json.NewDecoder(statsRaw.Body)
