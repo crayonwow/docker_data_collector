@@ -36,6 +36,6 @@ jobs:
           host: ${{ secrets.DIGITAL_OCEAN_HOST_PROD }}
           USERNAME: ${{ secrets.DIGITAL_OCEAN_USERNAME_PROD }}
           PORT: ${{ secrets.DIGITAL_OCEAN_PORT_PROD }}
-          password: ${{ secrets.DIGITAL_OCEAN_PASS_PROD }}
+          key: ${{ secrets.DIGITAL_OCEAN_PASS_PROD }}
           script: |
             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock vpn:latest 
