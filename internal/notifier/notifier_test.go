@@ -28,6 +28,6 @@ func Test_prepareStatTemplate(t *testing.T) {
 	require.Equal(t, `Name: 1
 CPU %:    1.00%
 MEM %:    1.00%
-NETWORK : 11
+NETWORK : 1
 `, message)
 }
