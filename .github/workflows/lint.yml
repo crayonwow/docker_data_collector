@@ -1,4 +1,4 @@
-name: golangci-lint
+name: Development
 on:
   push:
   pull_request:
@@ -7,7 +7,7 @@ permissions:
   # Optional: allow read access to pull request. Use with `only-new-issues` option.
   # pull-requests: read
 jobs:
-  golangci:
+  development:
     name: lint
     runs-on: ubuntu-latest
     steps:
@@ -38,3 +38,4 @@ jobs:
 
           # Optional: if set to true then the action don't cache or restore ~/.cache/go-build.
           # skip-build-cache: true
+        run: go test -v ./...
