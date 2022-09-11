@@ -5,29 +5,23 @@ on:
       - closed
     branches:
       - main
-
+env:
+  IMAGE_NAME: vpn-app
 jobs:
   if_merged:
     if: github.event.pull_request.merged == true
     name: release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to registry
-        uses: docker/login-action@v2
+      - uses: actions/checkout@v3
+      - name: Build image
+        run: docker build . --file dockerfiles/dockerfile --tag $IMAGE_NAME
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
         with:
-          registry: registry.digitalocean.com
-          username: ${{ secrets.DIGITAL_OCEAN_REGISTRY_LOGIN }}
-          password: ${{ secrets.DIGITAL_OCEAN_REGISTRY_PASS }}
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: dockerfiles/dockerfile
-          push: true
-          tags: vpn-app:latest
+          token: ${{ secrets.DIGITAL_OCEAN_REGISTRY_LOGIN }}
+      - name: push image to digitalocean
+        run: |
+          doctl registry login
+          docker tag $IMAGE_NAME registry.digitalocean.com/vpn-app/$IMAGE_NAME
+          docker push registry.digitalocean.com/vpn-app/$IMAGE_NAME
