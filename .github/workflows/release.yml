@@ -39,4 +39,4 @@ jobs:
           PORT: ${{ secrets.DIGITAL_OCEAN_PORT_PROD }}
           key: ${{ secrets.DIGITAL_OCEAN_PASS_PROD }}
           script: |
-            docker stop watcher && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -d --name watcher registry.digitalocean.com/vpn-app/vpn-app:latest
+            docker pull registry.digitalocean.com/vpn-app/vpn-app:latest && docker stop watcher && docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -d --name watcher registry.digitalocean.com/vpn-app/vpn-app:latest
