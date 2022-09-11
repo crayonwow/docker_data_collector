@@ -8,14 +8,13 @@ on:
 env:
   IMAGE_NAME: vpn-app
 jobs:
-  if_merged:
+  build:
     if: github.event.pull_request.merged == true
-    name: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build image
-        run: docker build . --file dockerfiles/dockerfile --tag $IMAGE_NAME
+        run: docker build --file=dockerfiles/dockerfile --build-arg TG_CHAT_ID=${{ secrets.VPN_APP_TG_CHAT_ID_PROD }} --build-arg TG_BOT_KEY=${{ secrets.VPN_APP_TG_BOT_KEY_PROD}} --tag $IMAGE_NAME
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -25,3 +24,18 @@ jobs:
           doctl registry login
           docker tag $IMAGE_NAME registry.digitalocean.com/vpn-app/$IMAGE_NAME
           docker push registry.digitalocean.com/vpn-app/$IMAGE_NAME
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Executing remote  command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DIGITAL_OCEAN_HOST_PROD }}
+          USERNAME: ${{ secrets.DIGITAL_OCEAN_USERNAME_PROD }}
+          PORT: ${{ secrets.DIGITAL_OCEAN_PORT_PROD }}
+          password: ${{ secrets.DIGITAL_OCEAN_PASS_PROD }}
+          script: |
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock vpn:latest 
