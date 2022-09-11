@@ -93,6 +93,7 @@ func (w *watcher) watchContainers(ctx context.Context, interval time.Duration, h
 		logrus.WithError(err).Error("initial run")
 	}
 
+	logrus.WithField("interval", interval.String()).Debug("starting watch containers")
 	go func() {
 	LOOP:
 		for {
