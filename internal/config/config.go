@@ -20,9 +20,10 @@ func New() (Config, error) {
 }
 
 func tgConfig() (telegrambot.Config, error) {
-	chatID, err := strconv.ParseInt(os.Getenv("TG_CHAT_ID"), 10, 64)
+	chatIDRaw := os.Getenv("TG_CHAT_ID")
+	chatID, err := strconv.ParseInt(chatIDRaw, 10, 64)
 	if err != nil {
-		return telegrambot.Config{}, fmt.Errorf("parese int %d: %w", chatID, err)
+		return telegrambot.Config{}, fmt.Errorf("parese int %s: %w", chatIDRaw, err)
 	}
 	return telegrambot.Config{
 		Token:  os.Getenv("TG_BOT_KEY"),

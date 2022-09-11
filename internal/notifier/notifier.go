@@ -50,10 +50,15 @@ NETWORK : {{.NetworkIO}}
 )
 
 func Prepare(ctx context.Context, s sender, w containerWatcher) {
-	w.WatchContainers(ctx, time.Hour*24,
+	//w.WatchContainers(ctx, time.Hour*24,
+	//	createdHandler(s),
+	//	statsHandler(s),
+	//)
+	w.WatchContainers(ctx, time.Second*5,
 		createdHandler(s),
 		statsHandler(s),
 	)
+
 }
 
 func statsHandler(s sender) watcher.ContainerHandler {
