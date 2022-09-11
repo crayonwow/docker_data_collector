@@ -1,0 +1,21 @@
+FROM golang:1.19-alpine AS builder
+WORKDIR /app
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+
+COPY . .
+
+RUN go build -o docker_data_collector -mod=readonly cmd/main.go
+
+FROM alpine
+
+ARG TG_BOT_KEY
+ARG TG_CHAT_ID
+
+ENV TG_BOT_KEY=$TG_BOT_KEY
+ENV TG_CHAT_ID=$TG_CHAT_ID
+
+WORKDIR /
+COPY --from=builder /app/docker_data_collector /docker_data_collector
+
+ENTRYPOINT ["/docker_data_collector"]
