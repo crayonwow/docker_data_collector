@@ -33,6 +33,7 @@ jobs:
       - name: Executing remote  command
         uses: appleboy/ssh-action@master
         with:
+          timeout: 10s
           host: ${{ secrets.DIGITAL_OCEAN_HOST_PROD }}
           USERNAME: ${{ secrets.DIGITAL_OCEAN_USERNAME_PROD }}
           PORT: ${{ secrets.DIGITAL_OCEAN_PORT_PROD }}
