@@ -52,7 +52,7 @@ type (
 	}
 )
 
-func NewWatcher(s senderpkg.Sender) (*watcher, error) {
+func newWatcher(s senderpkg.Sender) (*watcher, error) {
 	cli, err := docker.NewClientWithOpts()
 	if err != nil {
 		return nil, err

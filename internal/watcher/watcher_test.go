@@ -21,7 +21,7 @@ func TestWatcher(t *testing.T) {
 		//senderMock := senderpkg.NewMockSender(ctl)
 		//senderMock.EXPECT().Send("hehel")
 		//
-		//w, err := NewWatcher(senderMock)
+		//w, err := newWatcher(senderMock)
 		//r.NoError(err)
 		//ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 		//defer cancel()
@@ -40,7 +40,7 @@ func TestWatcher(t *testing.T) {
 		senderMock := senderpkg.NewMockSender(ctl)
 		senderMock.EXPECT().Send("hehel")
 
-		w, err := NewWatcher(senderMock)
+		w, err := newWatcher(senderMock)
 		r.NoError(err)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 		defer cancel()

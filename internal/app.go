@@ -12,7 +12,7 @@ func Run(ctx context.Context, pool di.ApplicationPool) error {
 		return fmt.Errorf("pool run: %w", err)
 	}
 	<-ctx.Done()
-	if err := pool.Run(ctx); err != nil {
+	if err := pool.Stop(); err != nil {
 		return fmt.Errorf("pool run: %w", err)
 	}
 

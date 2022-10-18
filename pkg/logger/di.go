@@ -1,11 +1,9 @@
-package telegrambot
+package logger
 
 import (
 	"docker_data_collector/pkg/di"
 )
 
 func Module() di.Module {
-	return di.NewModule(
-		di.NewDependency(newBot),
-	)
+	return di.NewModule(di.NewDependency(newLogger))
 }

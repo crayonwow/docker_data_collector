@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/schollz/progressbar/v3"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/multierr"
 )
@@ -27,12 +28,17 @@ type (
 )
 
 func (a ApplicationPool) Run(ctx context.Context) error {
+	pb := progressbar.Default(int64(len(a)), "starting applications...")
+	defer pb.Close()
 	for _, application := range a {
+		logrus.Infof("run %T", application)
 		if err := application.Run(ctx); err != nil {
 			logrus.WithError(err).Errorf("%T failed to run", application)
 			return err
 		}
+		pb.Add(1)
 	}
+	logrus.Info("all applications started")
 	return nil
 }
 
@@ -51,6 +57,8 @@ func (a ApplicationPool) Stop() error {
 	errorList := make([]error, 0, len(a))
 	mu := sync.Mutex{}
 
+	pb := progressbar.Default(int64(len(a)), "stopping applications...")
+	defer pb.Close()
 	for _, application := range a {
 		application := application
 		go func() {
@@ -60,6 +68,8 @@ func (a ApplicationPool) Stop() error {
 				mu.Lock()
 				errorList = append(errorList, err)
 				mu.Unlock()
+			} else {
+				pb.Add(1)
 			}
 		}()
 	}

@@ -8,7 +8,7 @@ import (
 
 func Module() di.Module {
 	return di.NewModule(
-		di.NewDependency(NewWatcher),
+		di.NewDependency(newWatcher),
 		di.NewDependency(applicationAdapter),
 	)
 }
