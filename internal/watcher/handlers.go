@@ -1,4 +1,4 @@
-package notifier
+package watcher
 
 import (
 	"bytes"
@@ -8,37 +8,10 @@ import (
 	"html/template"
 	"time"
 
-	"docker_data_collector/internal/watcher"
-
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
 	"github.com/docker/go-units"
 	"github.com/sirupsen/logrus"
-)
-
-type (
-	sender interface {
-		Send(string) error
-	}
-	containerWatcher interface {
-		WatchContainers(ctx context.Context, interval time.Duration, handlers ...watcher.ContainerHandler)
-	}
-	statsEntry struct {
-		Container        string
-		Name             string
-		ID               string
-		NetworkIO        string
-		CPUPercentage    float64
-		Memory           float64
-		MemoryLimit      float64
-		MemoryPercentage float64
-		NetworkRx        float64
-		NetworkTx        float64
-		BlockRead        float64
-		BlockWrite       float64
-		PidsCurrent      uint64 // Not used on Windows
-		IsInvalid        bool
-	}
 )
 
 const (
@@ -49,14 +22,7 @@ NETWORK : {{.NetworkIO}}
 `
 )
 
-func Prepare(ctx context.Context, s sender, w containerWatcher) {
-	w.WatchContainers(ctx, time.Hour*24,
-		createdHandler(s),
-		statsHandler(s),
-	)
-}
-
-func statsHandler(s sender) watcher.ContainerHandler {
+func (w *watcher) statsHandler() ContainerHandler {
 	return func(ctx context.Context, cli *docker.Client, container types.Container) error {
 		statsRaw, err := cli.ContainerStatsOneShot(ctx, container.ID)
 		if err != nil {
@@ -104,7 +70,7 @@ func statsHandler(s sender) watcher.ContainerHandler {
 		if err != nil {
 			return fmt.Errorf("prepare stats template: %w", err)
 		}
-		err = s.Send(message)
+		err = w.s.Send(message)
 		if err != nil {
 			return fmt.Errorf("send mark down: %w", err)
 		}
@@ -112,7 +78,7 @@ func statsHandler(s sender) watcher.ContainerHandler {
 	}
 }
 
-func createdHandler(s sender) watcher.ContainerHandler {
+func (w *watcher) createdHandler() ContainerHandler {
 	return func(ctx context.Context, cli *docker.Client, container types.Container) error {
 		inspect, err := cli.ContainerInspect(ctx, container.ID)
 		if err != nil {
@@ -126,7 +92,7 @@ func createdHandler(s sender) watcher.ContainerHandler {
 			return nil
 		}
 
-		err = s.Send(fmt.Sprintf("%s IT's PAYING TIME BABYY", container.Names))
+		err = w.s.Send(fmt.Sprintf("%s IT's PAYING TIME BABYY", container.Names))
 		if err != nil {
 			return fmt.Errorf("send: %w", err)
 		}
