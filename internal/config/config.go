@@ -5,18 +5,18 @@ import (
 	"os"
 	"strconv"
 
-	"docker_data_collector/internal/telegrambot"
+	"docker_data_collector/internal/sender/telegrambot"
 )
 
 type (
-	Config struct {
+	config struct {
 		TG telegrambot.Config
 	}
 )
 
-func New() (Config, error) {
+func newConfig() (*config, error) {
 	tg, err := tgConfig()
-	return Config{tg}, err
+	return &config{tg}, err
 }
 
 func tgConfig() (telegrambot.Config, error) {
@@ -29,4 +29,8 @@ func tgConfig() (telegrambot.Config, error) {
 		Token:  os.Getenv("TG_BOT_KEY"),
 		ChatID: chatID,
 	}, err
+}
+
+func TGConfig(c *config) telegrambot.Config {
+	return c.TG
 }

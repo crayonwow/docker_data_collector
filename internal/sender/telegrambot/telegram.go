@@ -12,25 +12,25 @@ type (
 		ChatID int64
 	}
 
-	bot struct {
+	Bot struct {
 		cli    *tgbotapi.BotAPI
 		chatID int64
 	}
 )
 
-func NewBot(config Config) (*bot, error) {
+func newBot(config Config) (*Bot, error) {
 	cli, err := tgbotapi.NewBotAPI(config.Token)
 	if err != nil {
 		return nil, fmt.Errorf("new tg bot: %w", err)
 	}
 
-	return &bot{
+	return &Bot{
 		cli:    cli,
 		chatID: config.ChatID,
 	}, nil
 }
 
-func (b *bot) Send(text string) error {
+func (b *Bot) Send(text string) error {
 	msg := tgbotapi.NewMessage(b.chatID, text)
 	_, err := b.cli.Send(msg)
 	return err
