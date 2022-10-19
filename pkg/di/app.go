@@ -3,7 +3,6 @@ package di
 import (
 	"context"
 	"sync"
-	"time"
 
 	"github.com/schollz/progressbar/v3"
 	"github.com/sirupsen/logrus"
@@ -16,7 +15,7 @@ type (
 	}
 
 	Stopper interface {
-		Stop() error
+		Stop(context.Context) error
 	}
 
 	Application interface {
@@ -29,23 +28,25 @@ type (
 
 func (a ApplicationPool) Run(ctx context.Context) error {
 	pb := progressbar.Default(int64(len(a)), "starting applications...")
-	defer pb.Close()
+	defer func() {
+		err := pb.Close()
+		if err != nil {
+			logrus.WithError(err).Error("close progress bar")
+		}
+	}()
 	for _, application := range a {
 		logrus.Infof("run %T", application)
 		if err := application.Run(ctx); err != nil {
 			logrus.WithError(err).Errorf("%T failed to run", application)
 			return err
 		}
-		pb.Add(1)
+		_ = pb.Add(1)
 	}
 	logrus.Info("all applications started")
 	return nil
 }
 
-func (a ApplicationPool) Stop() error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-
+func (a ApplicationPool) Stop(ctx context.Context) error {
 	wg := sync.WaitGroup{}
 	done := make(chan struct{})
 	wg.Add(len(a))
@@ -58,18 +59,23 @@ func (a ApplicationPool) Stop() error {
 	mu := sync.Mutex{}
 
 	pb := progressbar.Default(int64(len(a)), "stopping applications...")
-	defer pb.Close()
+	defer func() {
+		err := pb.Close()
+		if err != nil {
+			logrus.WithError(err).Error("close progress bar")
+		}
+	}()
 	for _, application := range a {
 		application := application
 		go func() {
 			defer wg.Done()
-			if err := application.Stop(); err != nil {
+			if err := application.Stop(ctx); err != nil {
 				logrus.WithError(err).Errorf("%T failed to stop", application)
 				mu.Lock()
 				errorList = append(errorList, err)
 				mu.Unlock()
 			} else {
-				pb.Add(1)
+				_ = pb.Add(1)
 			}
 		}()
 	}

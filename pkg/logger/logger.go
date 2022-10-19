@@ -10,11 +10,8 @@ type (
 	}
 )
 
-func newLogger(c *Config) *logrus.Logger {
-	logrus.Info(c)
-
+func NewLogger(c *Config) {
 	l := logrus.StandardLogger()
 	l.SetLevel(logrus.Level(c.Level))
 	l.SetReportCaller(true)
-	return l
 }

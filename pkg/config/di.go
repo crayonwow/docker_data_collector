@@ -10,6 +10,7 @@ func Module() di.Module {
 	return di.NewModule(
 		di.NewDependency(NewConfig),
 		di.NewDependency(LoggerConfig),
+		di.NewDependency(configPath, dig.Name("config_path")),
 	)
 }
 

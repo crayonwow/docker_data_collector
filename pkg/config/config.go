@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 
@@ -12,11 +13,17 @@ import (
 
 type (
 	Config struct {
-		Logger logger.Config
-
 		RawConfig []byte
+		Logger    logger.Config
 	}
 )
+
+func configPath() string {
+	path := ""
+	flag.StringVar(&path, "configPath", "config/config.yaml", "path to the config file")
+
+	return path
+}
 
 func NewConfig(params configIn) (*Config, error) {
 	if params.ConfigPath == "" {

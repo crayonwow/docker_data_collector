@@ -73,7 +73,7 @@ func (w *watcher) Run(ctx context.Context) error {
 	return nil
 }
 
-func (w *watcher) Stop() error {
+func (w *watcher) Stop(_ context.Context) error {
 	w.wg.Wait()
 	return nil
 }
