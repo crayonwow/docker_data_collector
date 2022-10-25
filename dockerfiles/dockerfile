@@ -19,4 +19,4 @@ WORKDIR /
 COPY --from=builder /app/docker_data_collector /docker_data_collector
 COPY --from=builder /app/config/config.yaml /config.yaml
 
-ENTRYPOINT ["/docker_data_collector"]
+ENTRYPOINT ["/docker_data_collector -configPath=config.yaml"]
