@@ -65,6 +65,6 @@ func (c *Container) Invoke(fs ...interface{}) *Container {
 	return c
 }
 
-func (c *Container) Main(main Main) {
+func (c *Container) Run() {
 	c.Invoke(main)
 }
