@@ -19,10 +19,9 @@ type (
 )
 
 func configPath() string {
-	path := ""
-	flag.StringVar(&path, "configPath", "config/config.yaml", "path to the config file")
-
-	return path
+	path := flag.String("configPath", "config/config.yaml", "path to the config file")
+	flag.Parse()
+	return *path
 }
 
 func NewConfig(params configIn) (*Config, error) {
