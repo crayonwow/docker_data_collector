@@ -18,7 +18,7 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITAL_OCEAN_REGISTRY_LOGIN }}
+          token: ${{ secrets.DIGITAL_OCEAN_REGISTRY_TOKEN }}
       - name: push image to digitalocean
         run: |
           doctl registry login
