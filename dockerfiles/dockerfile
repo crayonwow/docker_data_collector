@@ -15,8 +15,8 @@ ARG TG_CHAT_ID
 ENV TG_BOT_KEY=$TG_BOT_KEY
 ENV TG_CHAT_ID=$TG_CHAT_ID
 
-WORKDIR /
-COPY --from=builder /app/docker_data_collector /docker_data_collector
-COPY --from=builder /app/config/config.yaml /config.yaml
+WORKDIR /app
+COPY --from=builder /app/docker_data_collector /app/docker_data_collector
+COPY --from=builder /app/config/config.yaml /app/config.yaml
 
-ENTRYPOINT ["/docker_data_collector -configPath=config.yaml"]
+ENTRYPOINT ["./docker_data_collector", "-configPath=config.yaml"]
