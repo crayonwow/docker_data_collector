@@ -1,14 +1,12 @@
-package internal
+package di
 
 import (
 	"context"
 	"fmt"
 	"time"
-
-	"docker_data_collector/pkg/di"
 )
 
-func Run(ctx context.Context, pool di.ApplicationPool) error {
+func main(ctx context.Context, pool ApplicationPool) error {
 	if err := pool.Run(ctx); err != nil {
 		return fmt.Errorf("pool run: %w", err)
 	}

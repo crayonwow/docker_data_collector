@@ -18,5 +18,6 @@ func main() {
 				di.NewDependency(graceful.NewContext),
 			)).
 		Invoke(logger.NewLogger).
-		Main(internal.Run)
+		Run()
+
 }
